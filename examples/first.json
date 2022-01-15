@@ -1,0 +1,33 @@
+{
+    "simple": {
+        "name": "Radosław",
+        "lastname": "Szamszur",
+        "tagline": "DevOps Engineer",
+        "contact": {
+            "email": "hire@rsdev.pl",
+            "phone": "XXX XXX XXX",
+            "github": "rszamszur",
+            "telegram": "telegram_id"
+        },
+        "location": {
+            "address": "Injir 74 kv 79",
+            "country": "Russia",
+            "city": "Ekb"
+        }
+    },
+    "education": {
+       "display_name": "Education",
+       "items": [
+           {
+                "degree": "Bachelors of Biomedical Engineering",
+                "university": "Gdańsk University of Technology",
+                "time": "2012 - 2017",
+                "details": [
+                    "**Specialization:** Computer Science in Medicine",
+                    "Thesis: Web service for people with Alzheimers disease training.",
+                    "Grade: Very good"
+                ]
+            }
+       ]
+    }
+}

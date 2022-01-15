@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <title>{{simple.name}}'s resume</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="flex-1 text-gray-700 justify-start flex-col h-auto mx-3">
+            <div class="bg-gray-100 w-full h-auto mb-5 rounded-md p-5 leading-9">
+                <div class="font-bold text-4xl">{{simple.name}} {{simple.lastname}}</div>
+                <div class="text-xl text-gray-600">{{simple.tagline}}</div>
+                <hr class="my-5">
+                <div class="font-light">{{simple.location.address}} {{simple.location.city}}, {{simple.location.country}}</div>
+                <div class="font-light">
+                    <a href="mailto:{{simple.contact.email}}">{{simple.contact.email}}</a>
+                    | {{simple.contact.phone}}
+                    <br>
+                </div>
+                <hr class="my-4">
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
