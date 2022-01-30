@@ -1,4 +1,5 @@
 use std::env;
+use std::fs;
 
 mod generator;
 
@@ -14,5 +15,7 @@ fn main() {
     let result = generator::render_template(
         templates_path_str, "simple.html"
     );
-    println!("{}", result);
+
+    fs::write("/tmp/resume.html", &result).expect("Unable to write file");
+    
 }

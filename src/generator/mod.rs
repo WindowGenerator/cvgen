@@ -1,7 +1,3 @@
-extern crate serde;
-extern crate serde_json;
-extern crate tera;
-
 use serde::Serialize;
 use tera::{Context, Tera};
 
@@ -28,23 +24,13 @@ impl Product {
 }
 
 pub fn render_template(templates_path: &str, template_name: &str) -> String {
-    let tera = match Tera::parse(templates_path) {
-        Ok(t) => t,
-        Err(error) => {
-            println!("Parsing error(s): {}", error);
-            panic!("When parsing directory with templates we got an error")
-        }
-    };
+    let tera = Tera::parse(templates_path)
+        .expect("When parsing directory with templates we got an error");
 
     let product = Product::new();
 
-    let context = match Context::from_serialize(&product) {
-        Ok(context) => context,
-        Err(error) => {
-            println!("Error: {}", error);
-            panic!("When creating context, we got an error")
-        }
-    };
+    let context = Context::from_serialize(&product)
+        .expect("When creating context, we got an error");
 
     match tera.render(template_name, &context) {
         Ok(result) => result,
