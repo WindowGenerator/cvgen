@@ -7,10 +7,10 @@ use std::path::Path;
 mod model;
 
 pub fn get_cv_info<P: AsRef<Path>>(from_path: P) -> Result<FullCV> {
-    let file_fd = File::open(from_path).expect("Я УМЕР ТУТ");
+    let file_fd = File::open(from_path).unwrap();
     let reader = BufReader::new(file_fd);
 
-    let full_cv: FullCV = serde_json::from_reader(reader).expect("Not valid JSON");
+    let full_cv: FullCV = serde_json::from_reader(reader).unwrap();
 
     Ok(full_cv)
 }

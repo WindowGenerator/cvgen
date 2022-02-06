@@ -12,7 +12,15 @@ pub struct Simple {
     pub name: String,
     pub lastname: String,
     pub tagline: String,
-    pub contact: Contact
+    pub contact: Contact,
+    pub location: Location
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Location {
+    address: String,
+    country: String,
+    city: String
 }
 
 #[derive(Serialize, Deserialize)]

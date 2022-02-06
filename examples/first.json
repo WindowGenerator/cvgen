@@ -8,6 +8,11 @@
             "phone": "XXX XXX XXX",
             "github": "rszamszur",
             "telegram": "telegram_id"
+        },
+        "location": {
+            "address": "Injir 74 kv 79",
+            "country": "Russia",
+            "city": "Ekb"
         }
     },
     "education": {
