@@ -1,7 +1,10 @@
 mod cli;
 mod generator;
 mod parser;
-mod common;
+mod assets;
+
+#[macro_use]
+extern crate lazy_static;
 
 
 fn main() {

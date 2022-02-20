@@ -1,9 +1,12 @@
 use std::fs;
+use std::path::Path;
 
 use crate::parser;
 use crate::generator;
-use crate::common;
+// use crate::common;
+use crate::assets;
 
+use log::{debug, info, error};
 use tera::Context;
 use clap::{App, Arg};
 
@@ -11,49 +14,104 @@ const DEFAULT_RESUME_FILE: &str = "default.json";
 const DEFAULT_THEME: &str = "simple";
 const DEFAULT_OUTPUT_RESUME: &str = "resume.html";
 
+const INIT_SUBCOMMAND: &str = "init";
+const BUILD_SUBCOMMAND: &str = "build";
+
 
 fn get_app() -> App<'static> {
-    App::new("CvgenApp")
+    App::new("CvGenApp")
         .author("WindowGenerator, chudov42@gmail.com")
         .version("0.0.1")
         .about("Generate cv")
-        .subcommands(
-            vec![
-                App::new("init")
-                    .about("AAA")
-                    .arg(Arg::new("to").default_value(DEFAULT_RESUME_FILE)),
-                App::new("build")
-                    .about("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-                    .arg(Arg::new("theme").default_value(DEFAULT_THEME))
-                    .arg(Arg::new("from").default_value(DEFAULT_RESUME_FILE))
-                    .arg(Arg::new("output").default_value(DEFAULT_OUTPUT_RESUME)),
-            ]
+        .subcommand(
+            App::new(INIT_SUBCOMMAND)
+                .about("Create a default resume JSON template. The output file where you should put your information.")
+                .arg(
+                    Arg::new("to")
+                        .long("to")
+                        .short('t')
+                        .help("Choose a output filename")
+                        .default_value(DEFAULT_RESUME_FILE)
+                )
         )
-        .after_help("Longer explanation to appear after the options when \
-                displaying the help information from --help or -h")
+        .subcommand(
+            App::new(BUILD_SUBCOMMAND)
+                .about("Generate a HTML file based on the cv.json file. The output will be \"cv.html\" file. See the documentation for the list of available themes. Example of use: qcv build simple")
+                .arg(
+                    Arg::new("theme")
+                        .long("theme")
+                        .short('t')
+                        .help("HEEEEELP")
+                        .default_value(DEFAULT_THEME)
+                )
+                .arg(
+                    Arg::new("from")
+                        .long("from")
+                        .short('f')
+                        .help("HEEEEELP")
+                        .default_value(DEFAULT_RESUME_FILE)
+                )
+                .arg(
+                    Arg::new("output")
+                        .long("output")
+                        .short('o')
+                        .help("HEEEEELP")
+                        .default_value(DEFAULT_OUTPUT_RESUME)
+                )
+        )
+        .after_help("Longer explanation to appear after the options when displaying the help information from --help or -h")
 }
-pub fn run() {
+pub fn run() { 
     let app = get_app();
     let matches = app.get_matches();
 
-    if let Some(c) = matches.subcommand_matches("init") {
-        if let Some(opt) = c.value_of("to") {
-            println!("Value for init: {}", opt);
+    match matches.subcommand() {
+        Some((INIT_SUBCOMMAND, init_mathes)) => {
+            debug!("Start init command");
+            let to = init_mathes.value_of("to").unwrap();
+
+            init(to);
+        }
+        Some((BUILD_SUBCOMMAND, build_mathes)) => {
+            debug!("Start build command");
+
+            let theme = build_mathes.value_of("theme").unwrap();
+            let from = Path::new(build_mathes.value_of("from").unwrap());
+            let output = Path::new(build_mathes.value_of("output").unwrap());
+
+
+            if !assets::THEMES.contains_key(theme) {
+                error!("Such theme not exist");
+                return;
+            }
+            if !from.exists() {
+                error!("Such file not exists");
+                return;
+            }
+
+            build(from, output, assets::THEMES.get(theme).unwrap());
+
+        }
+        _ => {
+            info!("Such command is not exists");
+            unreachable!()
         }
     }
     
     
 }
 
-pub fn init() {
-    let templates_path_str = common::get_templates_path();
-    let full_cv =
-        parser::get_cv_info("examples/first.json").expect("Expected error, when try parsing JSON");
-
-    let context =
-        Context::from_serialize(&full_cv).expect("When creating context, we got an error");
-
-    let result = generator::render_template(context, &templates_path_str, "index.html");
-
-    fs::write("/tmp/resume.html", &result).expect("Unable to write file");
+fn init(to: &str) {
+    generator::generate_default_json(to);
 }
+
+
+fn build(from: &Path, output: &Path, template_name: &str) {
+    let full_cv = parser::get_cv_info(from).expect("Expected error, when try parsing JSON");
+    let context = Context::from_serialize(&full_cv).expect("When creating context, we got an error");
+    
+    let result = assets::TEMPLATES.render(template_name, &context).unwrap();
+
+    fs::write(output, &result).expect("Unable to write file");
+}
+

@@ -1,10 +1,15 @@
-use tera::{Context, Tera};
+// use tera::{Context, Tera};
+use std::fs::File;
+use std::io::{BufWriter, Write};
+
+use crate::assets;
 
 mod tests;
 
-pub fn render_template(context: Context, templates_path: &str, template_name: &str) -> String {
-    let tera = Tera::parse(templates_path)
-        .expect("When parsing directory with templates we got an error");
 
-    tera.render(template_name, &context).unwrap()
+pub fn generate_default_json(to: &str) {
+    let file_fd = File::create(to).unwrap();
+    let mut buf = BufWriter::new(file_fd);
+
+    buf.write_all(assets::DEFAULT_JSON_CONTENT.as_bytes()).unwrap();
 }
