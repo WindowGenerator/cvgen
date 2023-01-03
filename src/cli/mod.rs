@@ -19,10 +19,10 @@ const BUILD_SUBCOMMAND: &str = "build";
 
 
 fn get_cli() -> App<'static> {
-    App::new("CvGenApp")
+    App::new("CVGEN CLI")
         .author("WindowGenerator, chudov42@gmail.com")
         .version("0.0.1")
-        .about("Generate cv")
+        .about("CV Generator CLI")
         .subcommand(
             App::new(INIT_SUBCOMMAND)
                 .about("Create a default resume JSON template. The output file where you should put your information.")

@@ -20,7 +20,6 @@ lazy_static! {
     pub static ref THEMES: HashMap<&'static str, &'static str> = {
         let mut hash_map = HashMap::new();
         hash_map.insert("simple", "simple.html");
-        hash_map.insert("purple", "purple.html");
         hash_map
     };
 }
