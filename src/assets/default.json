@@ -1,5 +1,5 @@
 {
-    "simple": {
+    "common": {
         "name": "<Name>",
         "lastname": "<Lastname>",
         "tagline": "<Special>",
@@ -14,20 +14,5 @@
             "country": "<Counrty>",
             "city": "<City>"
         }
-    },
-    "education": {
-       "display_name": "Education",
-       "items": [
-           {
-                "degree": "Bachelors of Biomedical Engineering",
-                "university": "Gdańsk University of Technology",
-                "time": "2012 - 2017",
-                "details": [
-                    "**Specialization:** Computer Science in Medicine",
-                    "Thesis: Web service for people with Alzheimers disease training.",
-                    "Grade: Very good"
-                ]
-            }
-       ]
     }
 }

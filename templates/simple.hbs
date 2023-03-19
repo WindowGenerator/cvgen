@@ -1,0 +1,24 @@
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>{{common.name}}'s resume</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{{common.name}} {{common.lastname}}</h1>
+            <h2>{{common.tagline}}</h2>
+        </div>
+        
+        <div class="contact">
+            <div>{{common.location.address}} {{common.location.city}}, {{common.location.country}}</div>
+            <div>
+                <a href="mailto:{{common.contact.email}}">{{common.contact.email}}</a>
+                <span>Phone: {{common.contact.phone}}</span>
+                <span>Github: {{common.contact.github}}</span>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

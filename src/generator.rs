@@ -1,10 +1,7 @@
-// use tera::{Context, Tera};
 use std::fs::File;
 use std::io::{BufWriter, Write};
 
 use crate::assets;
-
-mod tests;
 
 
 pub fn generate_default_json(to: &str) {

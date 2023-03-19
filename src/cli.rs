@@ -1,13 +1,11 @@
-use std::fs;
 use std::path::Path;
+use std::process::exit;
 
-use crate::parser;
 use crate::generator;
-// use crate::common;
 use crate::assets;
+use crate::renderer;
 
 use log::{debug, info, error};
-use tera::Context;
 use clap::{App, Arg};
 
 const DEFAULT_RESUME_FILE: &str = "default.json";
@@ -15,7 +13,7 @@ const DEFAULT_THEME: &str = "simple";
 const DEFAULT_OUTPUT_RESUME: &str = "resume.html";
 
 const INIT_SUBCOMMAND: &str = "init";
-const BUILD_SUBCOMMAND: &str = "build";
+const RENDER_SUBCOMMAND: &str = "render";
 
 
 fn get_cli() -> App<'static> {
@@ -35,7 +33,7 @@ fn get_cli() -> App<'static> {
                 )
         )
         .subcommand(
-            App::new(BUILD_SUBCOMMAND)
+            App::new(RENDER_SUBCOMMAND)
                 .about("Generate a HTML file based on the cv.json file. The output will be \"cv.html\" file. See the documentation for the list of available themes. Example of use: qcv build simple")
                 .arg(
                     Arg::new("theme")
@@ -73,7 +71,7 @@ pub fn run() {
 
             init(to);
         }
-        Some((BUILD_SUBCOMMAND, build_mathes)) => {
+        Some((RENDER_SUBCOMMAND, build_mathes)) => {
             debug!("Start build command");
 
             let theme = build_mathes.value_of("theme").unwrap();
@@ -81,17 +79,24 @@ pub fn run() {
             let output = Path::new(build_mathes.value_of("output").unwrap());
 
 
-            // TODO: Check if theme from ouside exist
-            if !assets::THEMES.contains_key(theme) {
-                error!("Such theme not exist");
-                return;
-            }
             if !from.exists() {
-                error!("Such file not exists");
+                error!("Such file doesn't exist");
                 return;
             }
 
-            build(from, output, assets::THEMES.get(theme).unwrap());
+            match assets::THEMES.get(theme) {
+                Some(template_name) =>  match renderer::render(from, output, template_name) {
+                    Ok(_) => (),
+                    Err(e) => {
+                        error!("Error while building template: {}", e.to_string());
+                        exit(1);
+                    }
+                },
+                None => {
+                    error!("Such theme not exist, theme name: {}", theme);
+                    exit(1);
+                }
+            }
 
         }
         _ => {
@@ -105,14 +110,3 @@ pub fn run() {
 fn init(to: &str) {
     generator::generate_default_json(to);
 }
-
-
-fn build(from: &Path, output: &Path, template_name: &str) {
-    let full_cv = parser::get_cv_info(from).expect("Expected error, when try parsing JSON");
-    let context = Context::from_serialize(&full_cv).expect("When creating context, we got an error");
-    
-    let result = assets::TEMPLATES.render(template_name, &context).unwrap();
-
-    fs::write(output, &result).expect("Unable to write file");
-}
-
